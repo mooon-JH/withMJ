@@ -5,7 +5,7 @@
   "description": "소규모 학원용 학생 성취 리포트 + 카카오 알림톡 자동 발송 SaaS",
   "main": "src/server.js",
   "engines": {
-    "node": ">=22.5"
+    "node": ">=22.13"
   },
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning src/server.js",

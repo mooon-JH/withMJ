@@ -1,6 +1,11 @@
 const path = require('node:path');
 const fs = require('node:fs');
-const { DatabaseSync } = require('node:sqlite');
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = require('node:sqlite'));
+} catch {
+  throw new Error(`Node.js ${process.version} 에는 내장 SQLite 가 없습니다. Node 22.13 이상으로 실행해 주세요 (Render: 환경변수 NODE_VERSION=22.22.0).`);
+}
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS academies (

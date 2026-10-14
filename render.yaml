@@ -12,7 +12,7 @@ services:
     healthCheckPath: /healthz
     envVars:
       - key: NODE_VERSION
-        value: 22.12.0
+        value: 22.22.0   # node:sqlite 는 22.13 이상에서 플래그 없이 동작
       - key: DEMO_SEED
         value: "1"
       - key: ADMIN_EMAIL

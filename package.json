@@ -1,0 +1,19 @@
+{
+  "name": "withmj",
+  "version": "0.1.0",
+  "private": true,
+  "description": "소규모 학원용 학생 성취 리포트 + 카카오 알림톡 자동 발송 SaaS",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/server.js",
+    "seed": "node --disable-warning=ExperimentalWarning scripts/seed.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}

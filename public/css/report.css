@@ -1,0 +1,127 @@
+/* 리포트는 '종이 성적표' 느낌으로 항상 밝은 테마. 화면(모바일 카톡 인앱 브라우저)과 A4 인쇄 둘 다 고려 */
+:root {
+  --paper: #ffffff;
+  --desk: #eef0f3;
+  --ink: #161b26;
+  --sub: #5d6575;
+  --rule: #d7dbe2;
+  --rule-strong: #161b26;
+  --brand: #2f6bff;
+  --brand-soft: #e8efff;
+  --band: #dfe8ff;
+  --low: #e0444e;
+  --normal: #2f6bff;
+  --high: #16a36a;
+  --avg: #8a93a6;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--desk); color: var(--ink); font-size: 13px; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+
+.print-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: #161b26; color: #fff; }
+.print-bar button { font: inherit; font-weight: 700; border: 0; border-radius: 8px; padding: 8px 14px; background: #fff; color: #161b26; cursor: pointer; }
+
+.sheet { width: 100%; max-width: 794px; margin: 16px auto; background: var(--paper); padding: 28px 30px 22px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+.sheet + .sheet { margin-top: 24px; }
+
+/* 머리말 */
+.head { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 3px solid var(--rule-strong); padding-bottom: 8px; gap: 12px; }
+.head .academy { font-size: 13px; font-weight: 700; color: var(--sub); }
+.head h1 { font-size: 24px; margin: 2px 0 0; letter-spacing: -.02em; }
+.head .period { text-align: right; }
+.head .period b { display: block; font-size: 15px; }
+.badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: var(--ink); color: #fff; }
+
+.info { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--rule); }
+.info div { padding: 7px 8px; border-right: 1px solid var(--rule); }
+.info div:last-child { border-right: 0; }
+.info span { display: block; font-size: 10.5px; color: var(--sub); }
+.info b { font-size: 14px; }
+
+.sec { margin-top: 16px; break-inside: avoid; page-break-inside: avoid; }
+.sec-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; padding: 5px 10px; background: var(--ink); color: #fff; margin-bottom: 8px; }
+.sec-title small { font-weight: 500; opacity: .75; font-size: 11px; }
+
+/* 종합 */
+.summary { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 14px; align-items: center; }
+.ring { text-align: center; }
+.ring .grade { font-size: 13px; font-weight: 700; margin-top: 2px; }
+.stat-box { border: 1px solid var(--rule); padding: 10px 12px; height: 100%; }
+.stat-box .k { font-size: 11px; color: var(--sub); font-weight: 700; }
+.stat-box .v { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat-box .v small { font-size: 12px; font-weight: 600; color: var(--sub); }
+.up { color: var(--high); } .down { color: var(--low); }
+
+/* 과목별 요약 표 */
+table.subj { width: 100%; border-collapse: collapse; }
+table.subj th, table.subj td { border-bottom: 1px solid var(--rule); padding: 6px 6px; text-align: left; }
+table.subj th { font-size: 11px; color: var(--sub); border-bottom: 1px solid var(--rule-strong); }
+table.subj td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.subj .gl { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-weight: 800; color: #fff; }
+
+/* 인바디식 막대 */
+.ib-head, .ib-row { display: grid; grid-template-columns: 132px 1fr 64px; align-items: center; }
+.ib-head { font-size: 10.5px; color: var(--sub); font-weight: 700; border-bottom: 1px solid var(--rule-strong); }
+.ib-head .zones { display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; }
+.ib-head .zones span { padding: 3px 0; border-left: 1px dashed var(--rule); }
+.ib-row { border-bottom: 1px solid var(--rule); min-height: 34px; }
+.ib-row .name b { display: block; font-size: 12.5px; }
+.ib-row .name span { font-size: 10.5px; color: var(--sub); }
+.ib-row .val { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; font-size: 14px; }
+.ib-row .val small { display: block; font-size: 10px; font-weight: 600; }
+.ib-row svg { display: block; width: 100%; height: 34px; }
+.lvl-low { color: var(--low); } .lvl-normal { color: var(--normal); } .lvl-high { color: var(--high); }
+
+.subject-grid { display: grid; grid-template-columns: 1fr 220px; gap: 14px; align-items: start; }
+.radar-box { text-align: center; font-size: 11px; color: var(--sub); }
+.legend { display: flex; gap: 12px; justify-content: center; font-size: 11px; color: var(--sub); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 4px; }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.comment-box { border: 1px solid var(--rule); padding: 10px 12px; min-height: 80px; white-space: pre-wrap; }
+.comment-box .d { color: var(--sub); font-size: 11px; font-weight: 700; margin-right: 6px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { border: 1px solid var(--rule); border-radius: 4px; padding: 2px 8px; font-size: 12px; }
+.tag.s { border-color: var(--high); color: var(--high); }
+.tag.w { border-color: var(--low); color: var(--low); }
+
+.foot { margin-top: 16px; border-top: 1px solid var(--rule); padding-top: 8px; display: flex; justify-content: space-between; color: var(--sub); font-size: 11px; gap: 8px; flex-wrap: wrap; }
+.empty { text-align: center; padding: 60px 20px; color: var(--sub); }
+
+/* 모바일 (카톡 인앱 브라우저) */
+@media (max-width: 640px) {
+  .sheet { margin: 0; padding: 18px 14px; box-shadow: none; }
+  .sheet + .sheet { margin-top: 8px; }
+  .head h1 { font-size: 20px; }
+  .info { grid-template-columns: repeat(3, 1fr); }
+  .info div:nth-child(3) { border-right: 0; }
+  .summary { grid-template-columns: 1fr 1fr; }
+  .summary .ring { grid-column: 1 / -1; }
+  .subject-grid, .two { grid-template-columns: 1fr; }
+  .ib-head, .ib-row { grid-template-columns: 84px 1fr 52px; }
+  table.subj .hide-m { display: none; }
+}
+
+/* 인쇄: A4 세로, 한 학생당 한 장 */
+@page { size: A4 portrait; margin: 10mm; }
+@media print {
+  body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .print-bar { display: none; }
+  .sheet { max-width: none; margin: 0; padding: 0; box-shadow: none; page-break-after: always; break-after: page; }
+  .sheet:last-child { page-break-after: auto; break-after: auto; }
+  .sheet + .sheet { margin-top: 0; }
+}
+
+/* 인쇄용 촘촘한 배치 (인쇄 직전 body.printing 이 붙음) */
+.printing .print-bar { display: none; }
+.printing .sheet { max-width: none; margin: 0 auto; padding: 0; box-shadow: none; }
+.printing .sec { margin-top: 10px; }
+.printing .sec-title { padding: 3px 8px; margin-bottom: 5px; }
+.printing .ring svg { width: 104px; height: 104px; }
+.printing .stat-box { padding: 8px 10px; }
+.printing .ib-row { min-height: 28px; }
+.printing .ib-row svg { height: 28px; }
+.printing .radar-box svg { max-width: 180px !important; }
+.printing .trend svg { max-height: 130px; }
+.printing .comment-box { min-height: 0; }

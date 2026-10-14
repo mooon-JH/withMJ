@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성취리포트 학원</title>
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side" id="nav">
+    <div class="logo" id="academyName">성취리포트<small>학원 관리</small></div>
+    <button class="nav" data-page="home">홈</button>
+    <button class="nav" data-page="entry">성적 입력</button>
+    <button class="nav" data-page="students">학생 관리</button>
+    <button class="nav" data-page="print">리포트 · 인쇄</button>
+    <button class="nav" data-page="sends">발송 내역</button>
+    <button class="nav" data-page="metrics">평가 항목</button>
+    <button class="nav" data-page="settings">설정</button>
+    <div class="spacer"></div>
+    <button class="nav" onclick="logout()">로그아웃</button>
+  </nav>
+  <main id="main"></main>
+</div>
+<script src="/js/common.js"></script>
+<script src="/js/academy.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성취리포트 로그인</title>
+<link rel="stylesheet" href="/css/app.css">
+<style>
+  .wrap { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+  .hero { background: linear-gradient(150deg, #2f6bff, #1c3fa8); color: #fff; padding: 56px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  .hero h1 { font-size: 32px; line-height: 1.3; }
+  .hero ul { margin: 0; padding-left: 18px; opacity: .92; line-height: 1.9; }
+  .login { display: grid; place-items: center; padding: 32px 16px; }
+  .login form { width: min(360px, 100%); display: flex; flex-direction: column; gap: 14px; }
+  .login input { padding: 12px; }
+  .login button { padding: 12px; }
+  @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } .hero { padding: 32px 20px; } .hero h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div style="opacity:.8;font-weight:700">성취리포트</div>
+    <h1>점수만 입력하세요.<br>학부모님 카톡으로 성적표가 갑니다.</h1>
+    <ul>
+      <li>인바디처럼 한눈에 보이는 과목별 성취 그래프</li>
+      <li>일간 · 주간 · 월간 · 분기 자동 카카오 알림톡</li>
+      <li>반 전체 성적표 A4 일괄 인쇄</li>
+      <li>월 30,000원 · 첫 2주 무료</li>
+    </ul>
+  </section>
+  <section class="login">
+    <form id="f">
+      <h2>로그인</h2>
+      <input name="email" type="email" placeholder="이메일" autocomplete="username" required>
+      <input name="password" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+      <button class="primary">로그인</button>
+      <p class="muted" style="margin:0;font-size:13px">학원 계정은 상담 후 발급해 드립니다.</p>
+    </form>
+  </section>
+</div>
+<script src="/js/common.js"></script>
+<script>
+  api('/api/auth/me').then((me) => { location.href = me.user.role === 'superadmin' ? '/admin' : '/academy'; }).catch(() => {});
+  document.getElementById('f').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const r = await run(() => api('/api/auth/login', { method: 'POST', body: formData(e.target) }));
+    location.href = r.redirect;
+  });
+</script>
+</body>
+</html>

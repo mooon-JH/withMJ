@@ -30,7 +30,7 @@ Node.js 22.5 이상만 있으면 됩니다 (DB는 Node 내장 SQLite, 별도 설
 npm install
 cp .env.example .env      # 필요하면 수정
 npm run seed              # 데모 학원/학생/8주치 기록 생성
-npm start                 # http://localhost:3000
+npm start                 # http://localhost:3000  (DEMO_SEED=1 npm start 면 데모 자동 생성)
 npm test                  # 핵심 로직 테스트
 ```
 
@@ -40,6 +40,41 @@ npm test                  # 핵심 로직 테스트
 | 데모 학원 | `demo@academy.kr` / `demo1234` |
 
 `.env`의 `KAKAO_PROVIDER=mock` 상태에서는 실제 카톡 대신 서버 콘솔과 발송 내역에만 남습니다.
+
+## 📱 휴대폰에서 앱으로 테스트하기
+
+이 앱은 **PWA(웹 앱)** 입니다. 앱스토어를 거치지 않고, 인터넷 주소로 접속해 **「홈 화면에 추가」** 하면
+아이콘·전체화면·하단 탭바까지 일반 앱처럼 동작합니다. (설치하려면 `https://` 주소가 필요)
+
+### 1단계 · 무료 테스트 서버 띄우기 (Render, 약 5분, 카드 등록 불필요)
+1. [render.com](https://render.com) → **GitHub 로 가입/로그인**
+2. 대시보드 **New + → Blueprint** → 이 저장소(`withMJ`) 연결 → 브랜치 `claude/nifty-lamport-oo8rcy` 선택
+3. `ADMIN_PASSWORD`(운영자 비밀번호) 입력 → **Apply**
+4. 몇 분 뒤 `https://withmj-xxxx.onrender.com` 같은 주소가 생김 → 이게 테스트 앱 주소
+
+> 저장소의 `render.yaml` 이 설정을 다 갖고 있어서 버튼 몇 번이면 됩니다.
+> 무료 서버라 **15분 안 쓰면 잠들고(다시 열 때 30초~1분)**, 재시작하면 데이터가 데모 상태로 초기화됩니다. 테스트 전용.
+
+### 2단계 · 휴대폰에 설치
+| 휴대폰 | 방법 |
+|---|---|
+| **안드로이드** | Chrome 으로 주소 열기 → 로그인 후 홈 화면의 **「앱 설치하기」** 버튼 (또는 ⋮ 메뉴 → 앱 설치) |
+| **아이폰** | **Safari** 로 주소 열기 → 아래 공유 버튼(□↑) → **「홈 화면에 추가」** |
+
+⚠️ 카카오톡으로 받은 링크를 카톡 안에서 열면 설치가 안 됩니다 → ⋮ → 「다른 브라우저로 열기」.
+
+### 3단계 · 테스트 시나리오
+| 역할 | 계정 | 해볼 것 |
+|---|---|---|
+| 원장님 | `demo@academy.kr` / `demo1234` | 입력 탭에서 점수 넣고 **완료** → 학생 탭 → 「리포트」로 성적표 보기 → 「지금 발송」 → 더보기 › 발송 내역에서 카톡 링크 열어보기 |
+| 우리(운영자) | `admin@withmj.kr` / (1단계에서 정한 비번) | 학원 ON/OFF, 정산 실행, 영업 리스트 통화 기록, 계약 전환 |
+| 학부모 | (로그인 없음) | 발송 내역의 「보기」 링크 = 학부모님이 카톡에서 누르는 화면 |
+
+인쇄는 휴대폰에서도 됩니다 — 인쇄 탭 → 「인쇄 화면 열기」 → 공유/인쇄 → 같은 와이파이의 학원 프린터 선택.
+
+### 나중에 진짜 '스토어 앱'이 필요해지면
+- **안드로이드**: 이 PWA를 그대로 감싸서(TWA) 플레이스토어에 올릴 수 있음. 개발자 등록 1회 $25
+- **아이폰**: 앱스토어는 Apple 개발자 연 $99 + 심사. 영업 초기엔 PWA 로 충분하다고 판단
 
 ## 실서비스 전환 체크리스트
 
@@ -86,8 +121,10 @@ src/
     leads.js             네이버 수집, CSV
     defaults.js          신규 학원 기본 평가 항목
   routes/                auth · academy(학원) · admin(운영자) · public(학부모 링크)
+render.yaml              무료 테스트 서버(Render) 배포 설정
 public/
-  academy.html / admin.html / report.html   화면 (빌드 없는 순수 JS)
+  academy.html / admin.html / report.html   화면 (빌드 없는 순수 JS, 모바일은 하단 탭바)
+  manifest.webmanifest, sw.js, icons/        앱(PWA) 설치용
   js/report.js           인바디식 차트(SVG) + 인쇄 자동 맞춤
 test/core.test.js
 ```

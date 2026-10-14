@@ -2,7 +2,15 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6bff">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="성취리포트">
 <title>성취리포트 로그인</title>
 <link rel="stylesheet" href="/css/app.css">
 <style>
@@ -14,7 +22,7 @@
   .login form { width: min(360px, 100%); display: flex; flex-direction: column; gap: 14px; }
   .login input { padding: 12px; }
   .login button { padding: 12px; }
-  @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } .hero { padding: 32px 20px; } .hero h1 { font-size: 24px; } }
+  @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; min-height: 0; } .hero { padding: calc(28px + env(safe-area-inset-top)) 20px 24px; gap: 10px; } .hero h1 { font-size: 22px; } .hero ul { display: none; } .login { place-items: start center; } }
 </style>
 </head>
 <body>
@@ -36,11 +44,14 @@
       <input name="password" type="password" placeholder="비밀번호" autocomplete="current-password" required>
       <button class="primary">로그인</button>
       <p class="muted" style="margin:0;font-size:13px">학원 계정은 상담 후 발급해 드립니다.</p>
+      <div id="install"></div>
     </form>
   </section>
 </div>
 <script src="/js/common.js"></script>
 <script>
+  const ic = installCard();
+  if (ic) document.getElementById('install').append(ic);
   api('/api/auth/me').then((me) => { location.href = me.user.role === 'superadmin' ? '/admin' : '/academy'; }).catch(() => {});
   document.getElementById('f').addEventListener('submit', async (e) => {
     e.preventDefault();

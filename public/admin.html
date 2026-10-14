@@ -2,7 +2,15 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6bff">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="성취리포트">
 <title>성취리포트 운영</title>
 <link rel="stylesheet" href="/css/app.css">
 </head>
@@ -10,13 +18,13 @@
 <div class="layout">
   <nav class="side" id="nav">
     <div class="logo">성취리포트<small>운영자</small></div>
-    <button class="nav" data-page="home">대시보드</button>
-    <button class="nav" data-page="academies">학원 · 온오프</button>
-    <button class="nav" data-page="billing">정산 · 결제</button>
-    <button class="nav" data-page="leads">영업 리스트</button>
-    <button class="nav" data-page="sends">발송 로그</button>
+    <button class="nav" data-page="home" data-short="현황" data-icon="chart" data-tab>대시보드</button>
+    <button class="nav" data-page="academies" data-short="학원" data-icon="building" data-tab>학원 · 온오프</button>
+    <button class="nav" data-page="billing" data-short="정산" data-icon="won" data-tab>정산 · 결제</button>
+    <button class="nav" data-page="leads" data-short="영업" data-icon="phone" data-tab>영업 리스트</button>
+    <button class="nav" data-page="sends" data-icon="send">발송 로그</button>
     <div class="spacer"></div>
-    <button class="nav" onclick="logout()">로그아웃</button>
+    <button class="nav" data-icon="logout" onclick="logout()">로그아웃</button>
   </nav>
   <main id="main"></main>
 </div>

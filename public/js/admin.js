@@ -5,9 +5,12 @@ function go(page) {
   history.replaceState(null, '', '#' + page);
   document.querySelectorAll('#nav .nav').forEach((b) => b.classList.toggle('on', b.dataset.page === page));
   main.replaceChildren(h('div.empty', '불러오는 중…'));
-  pages[page]().catch((e) => main.replaceChildren(h('div.banner.bad', e.message)));
+  document.querySelectorAll('.modal-back').forEach((m) => m.remove());
+  window.scrollTo(0, 0);
+  pages[page]().then(() => cardify(main)).catch((e) => main.replaceChildren(h('div.banner.bad', e.message)));
 }
 document.querySelectorAll('#nav .nav[data-page]').forEach((b) => b.addEventListener('click', () => go(b.dataset.page)));
+setupNav(go);
 api('/api/auth/me').then((me) => { if (me.user.role !== 'superadmin') location.href = '/academy'; });
 
 const kpi = (k, v, s) => h('div.kpi', h('div.k', k), h('div.v', v), s ? h('div.s', s) : null);
@@ -23,6 +26,7 @@ pages.home = async () => {
     h('div.page-head', h('h2', '운영 대시보드'), h('span.muted', s.today),
       h('button', { onclick: () => run(() => api('/api/admin/dispatch/run', { method: 'POST', body: {} }), '발송 작업 실행 완료').then(() => go('home')) }, '발송 작업 지금 실행'),
       h('button', { onclick: () => run(() => api('/api/admin/billing/run', { method: 'POST', body: {} })).then((r) => { toast(`청구서 ${r.created.length}건 발행`); go('home'); }) }, '정산 지금 실행')),
+    installCard(),
     h('div.kpis',
       kpi('월 반복 매출 (MRR)', won(s.mrr), `유료 ${s.payingAcademies}곳`),
       kpi('이번 달 입금', won(s.collectedThisMonth)),

@@ -42,6 +42,11 @@ function createApp(db, ctx) {
   app.get('/academy', page('academy.html'));
   app.get('/r/:token', page('report.html'));
   app.get('/print', page('report.html')); // 학원용 미리보기·일괄 인쇄 (같은 렌더러 사용)
+  app.get('/sw.js', (_req, res) => { // 서비스 워커는 항상 최신본을 받도록 (앱 업데이트 반영)
+    res.set('Cache-Control', 'no-cache');
+    res.sendFile(path.join(pub, 'sw.js'));
+  });
+  app.get('/healthz', (_req, res) => res.json({ ok: true }));
   app.use(express.static(pub));
 
   app.use((err, _req, res, _next) => {
@@ -81,8 +86,14 @@ if (require.main === module) {
   loadEnv();
   const db = openDb();
   ensureAdmin(db);
+  if (process.env.DEMO_SEED === '1' || process.env.DEMO_SEED === 'true') {
+    const { seedDemo, hasDemo, DEMO_EMAIL, DEMO_PASSWORD } = require('../scripts/seed');
+    if (!hasDemo(db)) seedDemo(db);
+    console.log(`데모 모드: ${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
+  }
   const ctx = {
-    baseUrl: (process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, ''),
+    // Render 같은 호스팅은 RENDER_EXTERNAL_URL 로 자기 주소를 알려준다
+    baseUrl: (process.env.BASE_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, ''),
     kakao: createKakao(),
     payments: createPayments(),
   };

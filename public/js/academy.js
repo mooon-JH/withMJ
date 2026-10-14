@@ -7,9 +7,12 @@ function go(page) {
   history.replaceState(null, '', '#' + page);
   document.querySelectorAll('#nav .nav').forEach((b) => b.classList.toggle('on', b.dataset.page === page));
   main.replaceChildren(h('div.empty', '불러오는 중…'));
-  pages[page]().catch((e) => main.replaceChildren(h('div.banner.bad', e.message)));
+  document.querySelectorAll('.modal-back').forEach((m) => m.remove());
+  window.scrollTo(0, 0);
+  pages[page]().then(() => cardify(main)).catch((e) => main.replaceChildren(h('div.banner.bad', e.message)));
 }
 document.querySelectorAll('#nav .nav[data-page]').forEach((b) => b.addEventListener('click', () => go(b.dataset.page)));
+setupNav(go);
 
 api('/api/auth/me').then((me) => {
   if (me.user.role !== 'academy') location.href = '/admin';
@@ -32,6 +35,7 @@ pages.home = async () => {
   main.replaceChildren(
     h('div.page-head', h('h2', '오늘의 학원'), h('span.muted', d.today)),
     ...banners,
+    installCard(),
     h('div.kpis',
       kpi('재원생', d.students + '명'),
       kpi('오늘 입력 완료', d.todayCompleted + '명'),
@@ -98,9 +102,9 @@ pages.entry = async () => {
     h('td', row.status === 'completed' ? h('span.pill.ok', '완료') : row.status === 'draft' ? h('span.pill.warn', '임시') : h('span.pill', '미입력'))));
 
   const table = h('table.entry', h('thead', head1, head2), h('tbody', body));
-  const collect = () => {
+  const collect = (root) => {
     const rows = new Map();
-    table.querySelectorAll('input[data-sid]').forEach((el) => {
+    root.querySelectorAll('input[data-sid]').forEach((el) => {
       const sid = Number(el.dataset.sid);
       const r = rows.get(sid) || { studentId: sid, values: {}, comment: '' };
       if (el.dataset.comment) r.comment = el.value.trim();
@@ -111,19 +115,50 @@ pages.entry = async () => {
   };
   const save = async (complete) => {
     const r = await run(() => api('/api/academy/grid', {
-      method: 'POST', body: { date: entryState.date, complete, rows: collect(), metricIds: d.metrics.map((m) => m.id) },
+      method: 'POST', body: { date: entryState.date, complete, rows: collect(main), metricIds: d.metrics.map((m) => m.id) },
     }));
     toast(complete ? `${r.saved}명 완료 처리! 발송 주기에 맞춰 학부모님께 자동 발송됩니다.` : `${r.saved}명 임시 저장`);
     go('entry');
   };
 
+  const head = h('div.page-head.entry-head', h('h2', '성적 입력'), dateIn, clsSel, subSel);
+  const actions = h('div.toolbar.save-bar',
+    h('button', { onclick: () => save(false) }, '임시 저장'),
+    h('button.primary', { onclick: () => save(true) }, '완료 (발송 대상 등록)'));
+  if (!d.rows.length) {
+    main.replaceChildren(head, h('div.empty', '학생이 없습니다. 「학생 관리」에서 추가해 주세요.'));
+    return;
+  }
+
+  if (isMobile()) {
+    // 휴대폰: 학생 한 명당 카드 하나, 숫자 키패드로 입력. '다음'을 누르면 다음 칸으로
+    const statusPill = (st) => (st === 'completed' ? h('span.pill.ok', '완료') : st === 'draft' ? h('span.pill.warn', '임시') : h('span.pill', '미입력'));
+    const cards = d.rows.map((row) => h('div.card.student-entry',
+      h('div.se-head', h('b', row.student.name), h('span.muted', row.student.class_name || ''), h('span', { style: 'flex:1' }), statusPill(row.status)),
+      bySubj.map((g) => h('div.se-subject',
+        h('div.se-subj-name', g.subject),
+        h('div.se-grid', g.items.map((m) => h('label.se-field',
+          h('span', m.name),
+          h('input', { type: 'number', inputmode: 'decimal', enterkeyhint: 'next', step: 'any', min: m.min_value, max: m.max_value,
+            value: row.values[m.id] ?? '', placeholder: `${m.min_value}~${m.max_value}`, 'data-sid': row.student.id, 'data-mid': m.id })))))),
+      h('input.se-comment', { value: row.comment, 'data-sid': row.student.id, 'data-comment': 1, placeholder: '오늘 한 줄 코멘트', enterkeyhint: 'next' })));
+    const list = h('div.entry-cards', cards);
+    list.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+      e.preventDefault();
+      const all = [...list.querySelectorAll('input')];
+      const next = all[all.indexOf(e.target) + 1];
+      if (next) { next.focus(); next.scrollIntoView({ block: 'center', behavior: 'smooth' }); } else e.target.blur();
+    });
+    main.replaceChildren(head, h('p.muted.entry-hint', '빈칸은 미입력(결석 등). 키보드의 「다음」으로 다음 칸으로 넘어가요.'), list, actions);
+    return;
+  }
+
   main.replaceChildren(
-    h('div.page-head', h('h2', '성적 입력'), dateIn, clsSel, subSel),
+    head,
     h('p.muted', { style: 'margin-top:-8px' }, '빈칸은 미입력(결석 등)으로 처리됩니다. Enter 키로 아래 학생으로 이동해요. 과목을 고르면 그 과목 점수만 저장돼요.'),
-    d.rows.length ? h('div.card', { style: 'padding:0' }, h('div.table-wrap', table)) : h('div.empty', '학생이 없습니다. 「학생 관리」에서 추가해 주세요.'),
-    h('div.toolbar', { style: 'margin-top:16px;justify-content:flex-end' },
-      h('button', { onclick: () => save(false) }, '임시 저장'),
-      h('button.primary', { onclick: () => save(true) }, '완료 (발송 대상 등록)')));
+    h('div.card', { style: 'padding:0' }, h('div.table-wrap', table)),
+    actions);
   inputs[0]?.[0]?.focus();
 };
 

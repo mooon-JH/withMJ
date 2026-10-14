@@ -2,7 +2,15 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6bff">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="성취리포트">
 <title>성취리포트 학원</title>
 <link rel="stylesheet" href="/css/app.css">
 </head>
@@ -10,15 +18,15 @@
 <div class="layout">
   <nav class="side" id="nav">
     <div class="logo" id="academyName">성취리포트<small>학원 관리</small></div>
-    <button class="nav" data-page="home">홈</button>
-    <button class="nav" data-page="entry">성적 입력</button>
-    <button class="nav" data-page="students">학생 관리</button>
-    <button class="nav" data-page="print">리포트 · 인쇄</button>
-    <button class="nav" data-page="sends">발송 내역</button>
-    <button class="nav" data-page="metrics">평가 항목</button>
-    <button class="nav" data-page="settings">설정</button>
+    <button class="nav" data-page="home" data-icon="home" data-tab>홈</button>
+    <button class="nav" data-page="entry" data-short="입력" data-icon="edit" data-tab>성적 입력</button>
+    <button class="nav" data-page="students" data-short="학생" data-icon="users" data-tab>학생 관리</button>
+    <button class="nav" data-page="print" data-short="인쇄" data-icon="print" data-tab>리포트 · 인쇄</button>
+    <button class="nav" data-page="sends" data-icon="send">발송 내역</button>
+    <button class="nav" data-page="metrics" data-icon="list">평가 항목</button>
+    <button class="nav" data-page="settings" data-icon="settings">설정</button>
     <div class="spacer"></div>
-    <button class="nav" onclick="logout()">로그아웃</button>
+    <button class="nav" data-icon="logout" onclick="logout()">로그아웃</button>
   </nav>
   <main id="main"></main>
 </div>

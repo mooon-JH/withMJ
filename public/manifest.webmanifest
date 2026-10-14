@@ -1,0 +1,22 @@
+{
+  "name": "성취리포트 - 학원 성적 관리",
+  "short_name": "성취리포트",
+  "description": "점수만 입력하면 학부모님 카톡으로 인바디식 성적표가 갑니다.",
+  "lang": "ko",
+  "id": "/",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f6f8",
+  "theme_color": "#2f6bff",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "성적 입력", "url": "/academy#entry", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "성적표 인쇄", "url": "/academy#print", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

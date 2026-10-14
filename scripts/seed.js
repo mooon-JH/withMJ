@@ -1,21 +1,22 @@
 // 시연용 데모 데이터: 학원 1곳, 학생 12명(2개 반), 최근 8주 수학·영어 기록, 영업 리드 몇 곳
 // 사용: npm run seed  (기존 데모 학원은 지우고 다시 만듦)
+//       또는 DEMO_SEED=1 로 서버를 켜면 데모 학원이 없을 때 자동 생성 (테스트 서버용)
 const { openDb, tx } = require('../src/db');
 const { hashPassword } = require('../src/lib/auth');
 const { seedDefaultMetrics } = require('../src/services/defaults');
 const { saveLeads } = require('../src/services/leads');
 const t = require('../src/lib/time');
 
-const db = openDb(process.env.DB_PATH);
 const EMAIL = 'demo@academy.kr';
 const PASSWORD = 'demo1234';
 
-// 같은 결과가 나오도록 고정 시드 난수
-let seed = 42;
-const rand = () => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
 const clamp = (x) => Math.max(0, Math.min(100, Math.round(x)));
 
-tx(db, () => {
+function seedDemo(db) {
+  // 같은 결과가 나오도록 고정 시드 난수
+  let seed = 42;
+  const rand = () => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  tx(db, () => {
   const old = db.prepare('SELECT academy_id FROM users WHERE email = ?').get(EMAIL);
   if (old) db.prepare('DELETE FROM academies WHERE id = ?').run(old.academy_id);
   const today = t.todayKST();
@@ -58,6 +59,16 @@ tx(db, () => {
     { name: '한빛수학교습소', phone: '041-632-2222', address: '충남 홍성군 홍북읍 청사로 50', region: '충남 홍성군', category: '교육,학문>수학학원', link: '', source: 'demo' },
     { name: '예산잉글리시', phone: '041-333-3333', address: '충남 예산군 예산읍 천변로 7', region: '충남 예산군', category: '교육,학문>영어학원', link: 'https://example.com', source: 'demo' },
   ]);
-});
+  });
+}
 
-console.log(`데모 학원 생성 완료 → 로그인: ${EMAIL} / ${PASSWORD}`);
+function hasDemo(db) {
+  return !!db.prepare('SELECT 1 FROM users WHERE email = ?').get(EMAIL);
+}
+
+if (require.main === module) {
+  seedDemo(openDb(process.env.DB_PATH));
+  console.log(`데모 학원 생성 완료 → 로그인: ${EMAIL} / ${PASSWORD}`);
+}
+
+module.exports = { seedDemo, hasDemo, DEMO_EMAIL: EMAIL, DEMO_PASSWORD: PASSWORD };
